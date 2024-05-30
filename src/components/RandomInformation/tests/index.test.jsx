@@ -19,22 +19,17 @@ const mockFetch = jest.fn(() =>
         status: 200,
         json: () => Promise.resolve(factsReponse),
     })
-  );
-
+);
   
 describe("RandomInformation", () => {
 
     beforeAll(() => {
         jest.spyOn(window, "fetch").mockImplementation(mockFetch);
     });
-
     afterAll(() => {
         jest.resetAllMocks();
     })
-
     it("should render correctly", async () => {
-        
         render(<RandomInformation />);
-
     });
 });
