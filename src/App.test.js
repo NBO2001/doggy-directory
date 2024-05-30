@@ -25,6 +25,7 @@ test("renders the landing page", async () => {
   ).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Search" })).toBeDisabled();
   expect(screen.getByRole("img")).toBeInTheDocument();
+
 });
 
 test("should be able to search and display dog image results", async () => {
@@ -52,4 +53,6 @@ test("should be able to search and display dog image results", async () => {
   expect(screen.getByText(/2 Results/i)).toBeInTheDocument();
   expect(dogImages[0]).toHaveAccessibleName("cattledog 1 of 2");
   expect(dogImages[1]).toHaveAccessibleName("cattledog 2 of 2");
+
+
 });

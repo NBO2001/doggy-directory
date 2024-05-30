@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import placeholderImg from "./images/undraw_relaxing_walk.svg";
+import { RandomInformation } from "./components/RandomInformation";
 
 function App() {
   const [breeds, setBreeds] = useState([]);
-  const [randomDogInfo, setRandomDogInfo] = useState("");
   const [selectedBreed, setSelectedBreed] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [dogImages, setDogImages] = useState([]);
@@ -22,20 +22,7 @@ function App() {
       });
   }, []);
 
-  useEffect(() => {
-    // https://dogapi.dog/docs/api-v2
-    fetch("https://dogapi.dog/api/v2/facts")
-      .then((response) => {
-        if (response.status === 200 || response.ok) {
-          return response.json();
-        } else {
-          throw new Error(`HTTP error status: ${response.status}`);
-        }
-      })
-      .then((json) => {
-        setRandomDogInfo(json.data);
-      });
-  }, []);
+
 
   const searchByBreed = () => {
     setIsLoading(true);
@@ -56,10 +43,13 @@ function App() {
 
   return (
     <div className="d-flex justify-content-center flex-column text-center">
+      
       <header>
         <h1 className="mt-4 mb-5">Doggy Directory 🐶</h1>
       </header>
+
       <main role="main">
+
         <div className="d-flex justify-content-center">
           <select
             className="form-select w-25"
@@ -76,6 +66,7 @@ function App() {
               </option>
             ))}
           </select>
+
           <button
             type="button"
             className="btn btn-info mx-2"
@@ -84,21 +75,19 @@ function App() {
           >
             Search
           </button>
+
         </div>
 
-        {randomDogInfo !== "" && dogImages.length === 0 && !isLoading ? (
-          <div className="mt-5">
-            <h5>Random Dog Info:</h5>
-
-            <p>{randomDogInfo[0].attributes.body}</p>
-          </div>
-        ) : null}
+        {(dogImages.length === 0 && !isLoading) && (
+          <RandomInformation />
+        ) }
 
         {dogImages.length > 0 && !isLoading && (
           <div className="px-5 mx-5 text-end" data-testid="results-count">
             <p className="fs-5">{dogImages.length} results</p>
           </div>
         )}
+
         <div className="mt-5 d-flex justify-content-center flex-wrap px-5 mx-5">
           {dogImages.length === 0 && !isLoading && (
             <img
@@ -128,6 +117,7 @@ function App() {
               />
             ))}
         </div>
+
       </main>
     </div>
   );

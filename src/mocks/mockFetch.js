@@ -14,6 +14,18 @@ const dogImagesResponse = {
     ],
 };
 
+const factsReponse = {
+    data: [
+        {
+            id: "4f5a46a3-d38f-4605-bd31-908ca9f7361a",
+            type: "fact",
+            attributes: {
+                body: "Dogs can be trained to detect cancer and alert their owner."
+            }
+        }
+    ]
+};
+
 export default async function mockFetch(url) {
     switch (url) {
         case "https://dog.ceo/api/breeds/list/all": {
@@ -31,6 +43,12 @@ export default async function mockFetch(url) {
                 json: async () => dogImagesResponse,
             };
         }
+        case "https://dogapi.dog/api/v2/facts":
+            return {
+                ok: true,
+                status: 200,
+                json: async () => factsReponse
+            }
         default: {
             throw new Error(`Unhandled request: ${url}`);
         }
