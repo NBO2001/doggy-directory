@@ -9,23 +9,13 @@ export const RandomInformation = () => {
 
         const fetchExec = async () => {
           const response = await fetch("https://dogapi.dog/api/v2/facts");
-          const data = await response.json();
+          const { data } = await response.json();
 
-          console.log(data)
+          setRandomDogInfo(data);
         }
 
         fetchExec();
-        // fetch("https://dogapi.dog/api/v2/facts")
-        //   .then((response) => {
-        //     if (response.status === 200 || response.ok) {
-        //       return response.json();
-        //     } else {
-        //       throw new Error(`HTTP error status: ${response.status}`);
-        //     }
-        //   })
-        //   .then((json) => {
-        //     setRandomDogInfo(json.data);
-        //   });
+
       }, []);
 
     return randomDogInfo && (

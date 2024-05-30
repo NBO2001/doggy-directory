@@ -8,6 +8,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [dogImages, setDogImages] = useState([]);
 
+
   useEffect(() => {
     fetch("https://dog.ceo/api/breeds/list/all")
       .then((response) => {
@@ -43,7 +44,7 @@ function App() {
 
   return (
     <div className="d-flex justify-content-center flex-column text-center">
-      
+
       <header>
         <h1 className="mt-4 mb-5">Doggy Directory 🐶</h1>
       </header>
