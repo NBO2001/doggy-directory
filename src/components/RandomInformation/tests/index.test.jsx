@@ -1,35 +1,56 @@
 import { render, screen } from "@testing-library/react";
 import { RandomInformation } from ".."; 
+import { useFacts } from "../../../hooks/useFacts";
+import { faker } from '@faker-js/faker';
 
-const factsReponse = {
-    data: [
-        {
-            id: "4f5a46a3-d38f-4605-bd31-908ca9f7361a",
-            type: "fact",
-            attributes: {
-                body: "Dogs can be trained to detect cancer and alert their owner."
-            }
-        }
-    ]
-};
 
-const mockFetch = jest.fn(() =>
-    Promise.resolve({
-        ok: true,
-        status: 200,
-        json: () => Promise.resolve(factsReponse),
-    })
-);
+jest.mock("../../../hooks/useFacts", () => ({
+    ...jest.requireActual("../../../hooks/useFacts"),
+    useFacts: jest.fn()
+}))
   
 describe("RandomInformation", () => {
 
-    beforeAll(() => {
-        jest.spyOn(window, "fetch").mockImplementation(mockFetch);
-    });
-    afterAll(() => {
-        jest.resetAllMocks();
-    })
-    it("should render correctly", async () => {
+    it("renders correctly with random fact", () => {
+        const usefactsMock = useFacts;
+        
+        const body = faker.person.fullName();
+        const dogInfo = [
+            {
+                id: "4f5a46a3-d38f-4605-bd31-908ca9f7361a",
+                type: "fact",
+                attributes: {
+                    body
+                }
+            }
+        ]
+
+        usefactsMock.mockReturnValue({dogInfo, isPending: false, error: false});
+
         render(<RandomInformation />);
+
+        expect(screen.getByText(body)).toBeInTheDocument();
+    });
+
+    it("displays loading message while fetching data", () => {
+        const usefactsMock = useFacts;
+
+        usefactsMock.mockReturnValue({dogInfo: {}, isPending: true, error: false});
+
+        render(<RandomInformation />);
+
+        expect(screen.getByText("Did you know?...")).toBeInTheDocument();
+
+    });
+
+    it("displays error message if fetching data fails", () => {
+        const usefactsMock = useFacts;
+
+        usefactsMock.mockReturnValue({dogInfo: {}, isPending: false, error: true});
+
+        render(<RandomInformation />);
+
+        expect(screen.getByText("Error")).toBeInTheDocument();
+
     });
 });
