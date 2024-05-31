@@ -1,45 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import placeholderImg from "./images/undraw_relaxing_walk.svg";
 import { RandomInformation } from "./components/RandomInformation";
+import { useBreeds } from "./hooks/useBreeds";
+import { getDogImages } from "./services/dogApi";
 
 function App() {
-  const [breeds, setBreeds] = useState([]);
+  const { data, isPending } = useBreeds();
+
   const [selectedBreed, setSelectedBreed] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [dogImages, setDogImages] = useState([]);
 
-
-  useEffect(() => {
-    fetch("https://dog.ceo/api/breeds/list/all")
-      .then((response) => {
-        if (response.status === 200 || response.ok) {
-          return response.json();
-        } else {
-          throw new Error(`HTTP error status: ${response.status}`);
-        }
-      })
-      .then((json) => {
-        setBreeds(Object.keys(json.message));
-      });
-  }, []);
-
-
-
-  const searchByBreed = () => {
+  const searchByBreed = async () => {
+    
     setIsLoading(true);
-    fetch(`https://dog.ceo/api/breed/${selectedBreed}/images`)
-      .then((response) => {
-        if (response.status === 200 || response.ok) {
-          return response.json();
-        } else {
-          setIsLoading(false);
-          throw new Error(`HTTP error status: ${response.status}`);
-        }
-      })
-      .then((json) => {
-        setIsLoading(false);
-        setDogImages(json.message);
-      });
+
+    const {data, error} = await getDogImages(selectedBreed);
+    if(!error) setDogImages(data);
+
+    setIsLoading(false);
+
   };
 
   return (
@@ -61,7 +41,7 @@ function App() {
             <option value="" disabled>
               Select a breed
             </option>
-            {breeds.map((breed) => (
+            {!isPending && data.map((breed) => (
               <option key={breed} value={breed}>
                 {breed}
               </option>
